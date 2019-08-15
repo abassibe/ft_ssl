@@ -2,6 +2,7 @@
 NAME = ft_ssl
 
 SRCS =	ft_ssl.c \
+		md5.c
 
 OBJS = $(SRCS:.c=.o)
 

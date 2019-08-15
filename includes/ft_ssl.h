@@ -41,4 +41,13 @@ typedef struct s_ssl
     t_sha256 sha256;
 } t_ssl;
 
+void md5FillString(t_ssl ssl);
+unsigned int md5F0(unsigned int b, unsigned int c, unsigned int d);
+unsigned int md5F1(unsigned int b, unsigned int c, unsigned int d);
+unsigned int md5F2(unsigned int b, unsigned int c, unsigned int d);
+unsigned int md5F3(unsigned int b, unsigned int c, unsigned int d);
+
+unsigned char *ft_ustrnew(size_t size);
+unsigned char *ft_ustrcpy(unsigned char *dst, unsigned char *src);
+
 #endif

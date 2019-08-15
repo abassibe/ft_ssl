@@ -12,26 +12,6 @@
 
 #include "../includes/ft_ssl.h"
 
-unsigned int f0(unsigned int b, unsigned int c, unsigned int d)
-{
-	return (b & c) | (~b & d);
-}
-
-unsigned int f1(unsigned int b, unsigned int c, unsigned int d)
-{
-	return (d & b) | (~d & c);
-}
-
-unsigned int f2(unsigned int b, unsigned int c, unsigned int d)
-{
-	return (b ^ c ^ d);
-}
-
-unsigned int f3(unsigned int b, unsigned int c, unsigned int d)
-{
-	return (c ^ (b | ~d));
-}
-
 unsigned char *ft_ustrnew(size_t size)
 {
 	unsigned char *m;
@@ -63,41 +43,17 @@ unsigned char *ft_ustrcpy(unsigned char *dst, unsigned char *src)
 	return (dst);
 }
 
-void fillString(t_ssl ssl)
-{
-	unsigned char *buffer;
-	unsigned char *newMessage;
-	size_t bufferCount;
-	size_t newMesageLen;
-	unsigned int lenBits;
-
-	bufferCount = ((ssl.messageLen + 8) / 64) + 1;
-	newMesageLen = bufferCount * 64;
-	newMessage = ft_ustrnew(newMesageLen);
-	newMessage = ft_ustrcpy(newMessage, ssl.message);
-	newMessage[ssl.messageLen] = 0x80;
-	lenBits = 8 * ssl.messageLen;
-	memcpy(newMessage + (newMesageLen - 8), &lenBits, 4);
-	// printf("[%hhu][%hhu][%hhu][%hhu][%hhu]\n", newMessage[ssl.messageLen], newMessage[newMesageLen - 4], newMessage[newMesageLen - 3], newMessage[newMesageLen - 2], newMessage[newMesageLen - 1]);
-	// printf("[%x][%x][%x][%x][%x]\n", newMessage[ssl.messageLen], newMessage[newMesageLen - 4], newMessage[newMesageLen - 3], newMessage[newMesageLen - 2], newMessage[newMesageLen - 1]);
-	// printf("ssl.messageLen = %lu, [%zx]\n", ssl.messageLen, ssl.messageLen);
-	// for (int i = 0; i < newMesageLen; i++)
-	// 	printf("[%x]", newMessage[i]);
-	// printf("\n");
-}
-
-int main(int ac, char **av)
+int readAndInitialize(t_ssl *ssl, char **av)
 {
 	char *str;
 	char *buffer;
 	int fd;
 	int len;
-	t_ssl ssl;
 
 	if ((fd = open(av[1], O_RDONLY)) < 3)
 	{
 		ft_printf("Cannot open file.\n");
-		return (1);
+		return (0);
 	}
 	str = ft_strnew(1);
 	buffer = ft_strnew(50);
@@ -106,15 +62,25 @@ int main(int ac, char **av)
 		str = ft_strjoinff(str, buffer);
 		buffer = ft_memset(buffer, 0, 50);
 	}
-	ssl.message = (unsigned char *)str;
-	ssl.messageLen = ft_strlen(str);
+	ssl->message = (unsigned char *)str;
+	ssl->messageLen = ft_strlen(str);
 	free(str);
-
 	if (len < 0)
 	{
 		ft_printf("Error while reading.\n");
-		return (1);
+		return (0);
 	}
-	fillString(ssl);
+	return (1);
+}
+
+int main(int ac, char **av)
+{
+	t_ssl ssl;
+
+	if (ac > 1 && !readAndInitialize(&ssl, av))
+		return (-1);
+	else if (ac == 1)
+		return (0); //TODO: lecture depuis STDIN
+	md5FillString(ssl);
 	return (0);
 }
