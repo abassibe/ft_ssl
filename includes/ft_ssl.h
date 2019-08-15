@@ -30,6 +30,10 @@ typedef struct s_md5
     unsigned char *newMessage;
     size_t newMesageLen;
     int blockCount;
+    unsigned buffA;
+    unsigned buffB;
+    unsigned buffC;
+    unsigned buffD;
 } t_md5;
 
 typedef struct s_ssl

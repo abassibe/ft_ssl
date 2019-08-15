@@ -32,6 +32,15 @@ unsigned int md5F3(unsigned int b, unsigned int c, unsigned int d)
     return (c ^ (b | ~d));
 }
 
+t_ssl initializeBuffer(t_ssl ssl)
+{
+    ssl.md5.buffA = 0x01234567;
+    ssl.md5.buffB = 0x89abcdef;
+    ssl.md5.buffC = 0xfedcba98;
+    ssl.md5.buffD = 0x76543210;
+    return (ssl);
+}
+
 void md5FillString(t_ssl ssl)
 {
     unsigned int lenBits;
@@ -43,6 +52,7 @@ void md5FillString(t_ssl ssl)
     ssl.md5.newMessage[ssl.messageLen] = 0x80;
     lenBits = 8 * ssl.messageLen;
     memcpy(ssl.md5.newMessage + (ssl.md5.newMesageLen - 8), &lenBits, 4);
+    ssl = initializeBuffer(ssl);
     // printf("[%hhu][%hhu][%hhu][%hhu][%hhu]\n", ssl.md5.newMessage[ssl.messageLen], ssl.md5.newMessage[ssl.md5.newMesageLen - 4], ssl.md5.newMessage[ssl.md5.newMesageLen - 3], ssl.md5.newMessage[ssl.md5.newMesageLen - 2], ssl.md5.newMessage[ssl.md5.newMesageLen - 1]);
     // printf("[%x][%x][%x][%x][%x]\n", ssl.md5.newMessage[ssl.messageLen], ssl.md5.newMessage[ssl.md5.newMesageLen - 4], ssl.md5.newMessage[ssl.md5.newMesageLen - 3], ssl.md5.newMessage[ssl.md5.newMesageLen - 2], ssl.md5.newMessage[ssl.md5.newMesageLen - 1]);
     // printf("ssl.messageLen = %lu, [%zx]\n", ssl.messageLen, ssl.messageLen);
