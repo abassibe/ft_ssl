@@ -16,6 +16,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <math.h>
 #include "../includes/libft.h"
 
 typedef struct s_sha256
@@ -28,7 +29,7 @@ typedef struct s_sha256
 typedef struct s_md5
 {
     unsigned char *newMessage;
-    size_t newMesageLen;
+    size_t newMessageLen;
     int blockCount;
     unsigned buffA;
     unsigned buffB;
@@ -45,7 +46,7 @@ typedef struct s_ssl
     t_sha256 sha256;
 } t_ssl;
 
-void md5FillString(t_ssl ssl);
+void md5FillString(t_ssl *ssl);
 unsigned int md5F0(unsigned int b, unsigned int c, unsigned int d);
 unsigned int md5F1(unsigned int b, unsigned int c, unsigned int d);
 unsigned int md5F2(unsigned int b, unsigned int c, unsigned int d);

@@ -112,14 +112,13 @@ unsigned *md5(char *msg, int mlen)
             //            t = u.b[0]; u.b[0] = u.b[3]; u.b[3] = t;
             //            t = u.b[1]; u.b[1] = u.b[2]; u.b[2] = t;
             q -= 8;
-            printf("%d\n", q);
             memcpy(msg2 + q, &u.w, 4);
         }
     }
-    for (int i = 0; i < 64 * grps; i++)
-        printf("[%x]", msg2[i]);
-    printf("\n");
-    printf("%d\n", mlen);
+    // for (int i = 0; i < 64 * grps; i++)
+    //     printf("[%x]", msg2[i]);
+    // printf("\n");
+    // printf("%d\n", mlen);
 
     for (grp = 0; grp < grps; grp++)
     {
@@ -154,19 +153,38 @@ unsigned *md5(char *msg, int mlen)
     return h;
 }
 
+// int main(int argc, char *argv[])
+// {
+//     int j, k;
+//     FILE *fp = fopen(argv[1], "r");
+//     char *str;
+//     int i = 0;
+
+//     fseek(fp, 0, SEEK_END);
+//     long size = ftell(fp);
+//     fseek(fp, 0, SEEK_SET);
+//     str = malloc(size);
+//     fread(str, 1, size, fp);
+//     unsigned *d = md5(str, size);
+
+//     return 0;
+// }
+
 int main(int argc, char *argv[])
 {
     int j, k;
-    FILE *fp = fopen(argv[1], "r");
-    char *str;
-    int i = 0;
+    char *msg = "The quick brown fox jumps over the lazy dog.";
+    unsigned *d = md5(msg, strlen(msg));
+    WBunion u;
 
-    fseek(fp, 0, SEEK_END);
-    long size = ftell(fp);
-    fseek(fp, 0, SEEK_SET);
-    str = malloc(size);
-    fread(str, 1, size, fp);
-    unsigned *d = md5(str, size);
+    printf("= 0x");
+    for (j = 0; j < 4; j++)
+    {
+        u.w = d[j];
+        for (k = 0; k < 4; k++)
+            printf("%02x", u.b[k]);
+    }
+    printf("\n");
 
     return 0;
 }

@@ -81,6 +81,6 @@ int main(int ac, char **av)
 		return (-1);
 	else if (ac == 1)
 		return (0); //TODO: lecture depuis STDIN
-	md5FillString(ssl);
+	md5FillString(&ssl);
 	return (0);
 }
