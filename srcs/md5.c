@@ -78,11 +78,16 @@ static void processMd5(t_ssl *ssl)
     unsigned f;
     unsigned char currBlock[65];
     currBlock[64] = 0;
-    unsigned word;
+    // unsigned word;
     unsigned int *w;
 
     i = 0;
     j = 0;
+
+    unsigned int r[] = {7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
+                        5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20,
+                        4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
+                        6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21};
 
     unsigned int k[64] = {0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee, 0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501,
                           0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be, 0x6b901122, 0xfd987193, 0xa679438e, 0x49b40821,
@@ -125,11 +130,20 @@ static void processMd5(t_ssl *ssl)
             tmp = d;
             d = c;
             c = b;
-            b = ((a + f + k[i] + w[g]) leftrotate r[i]) + b;
+            b = leftRotate((a + f + k[i] + w[g]), r[i]) + b;
             a = tmp;
+            j += 1;
         }
+        ssl->md5.buffA += a;
+        ssl->md5.buffB += b;
+        ssl->md5.buffC += c;
+        ssl->md5.buffD += d;
         i += 64;
     }
+    printf("MD5 = %x", ssl->md5.buffA);
+    printf("%x", ssl->md5.buffB);
+    printf("%x", ssl->md5.buffC);
+    printf("%x\n", ssl->md5.buffD);
 }
 
 void md5FillString(t_ssl *ssl)
