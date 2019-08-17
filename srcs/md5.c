@@ -12,140 +12,110 @@
 
 #include "../includes/ft_ssl.h"
 
-unsigned int md5F0(unsigned int b, unsigned int c, unsigned int d)
+uint32_t convertAsLittleEndian(uint32_t n)
 {
-    return (b & c) | (~b & d);
-}
+    char *tmp;
+    int len;
 
-unsigned int md5F1(unsigned int b, unsigned int c, unsigned int d)
-{
-    return (d & b) | (~d & c);
-}
-
-unsigned int md5F2(unsigned int b, unsigned int c, unsigned int d)
-{
-    return (b ^ c ^ d);
-}
-
-unsigned int md5F3(unsigned int b, unsigned int c, unsigned int d)
-{
-    return (c ^ (b | ~d));
-}
-
-unsigned int *subDividBlocks(unsigned char *block)
-{
-    int i;
-    int j;
-    unsigned int *subDivided;
-
-    i = 0;
-    j = 0;
-    subDivided = (unsigned int *)malloc(16 * sizeof(unsigned int));
-    subDivided = ft_memset(subDivided, 0, 16 * sizeof(unsigned int));
-    while (j < 16)
+    tmp = ft_itoa_base_maj_unsigned(((n >> 24) | ((n & 0xff0000) >> 8) | ((n & 0xff00) << 8) | (n << 24)), 16);
+    len = ft_strlen(tmp);
+    ft_strdel(&tmp);
+    while (len < 8)
     {
-        subDivided[j] = (block[i] << 24) | (block[i + 1] << 16) | (block[i + 2] << 8) | block[i + 3];
-        i += 4;
-        j++;
+        write(1, "0", 1);
+        len++;
     }
-    return (subDivided);
+    return ((n >> 24) | ((n & 0xff0000) >> 8) | ((n & 0xff00) << 8) | (n << 24));
 }
 
-unsigned int leftRotate(unsigned int x, short int c)
+static void cantWaitFor2020(t_ssl *ssl, uint32_t *f, int *g, size_t j)
 {
-    return (x << c) | (x >> (32 - c));
+    if (j < 16)
+    {
+        *f = (ssl->md5.b & ssl->md5.c) | (~ssl->md5.b & ssl->md5.d);
+        *g = j;
+    }
+    else if (j < 32)
+    {
+        *f = (ssl->md5.d & ssl->md5.b) | (ssl->md5.c & ~ssl->md5.d);
+        *g = (5 * j + 1) % 16;
+    }
+    else if (j < 48)
+    {
+        *f = (ssl->md5.b ^ ssl->md5.c ^ ssl->md5.d);
+        *g = (3 * j + 5) % 16;
+    }
+    else
+    {
+        *f = (ssl->md5.c ^ (ssl->md5.b | ~ssl->md5.d));
+        *g = (7 * j) % 16;
+    }
+}
+
+static void hashWord(t_ssl *ssl, uint32_t *word)
+{
+    size_t j;
+    int g;
+    uint32_t f;
+
+    j = 0;
+    g = 0;
+    f = 0;
+    while (j < 64)
+    {
+        cantWaitFor2020(ssl, &f, &g, j);
+        f = f + ssl->md5.a + ssl->md5.k[j] + word[g];
+        ssl->md5.a = ssl->md5.d;
+        ssl->md5.d = ssl->md5.c;
+        ssl->md5.c = ssl->md5.b;
+        ssl->md5.b = ssl->md5.b + ((f << ssl->md5.r[j]) | (f >> (32 - ssl->md5.r[j])));
+        j += 1;
+    }
 }
 
 static void processMd5(t_ssl *ssl)
 {
     size_t i;
-    size_t j;
-    int g;
-    unsigned a;
-    unsigned b;
-    unsigned c;
-    unsigned d;
-    unsigned f;
     unsigned char currBlock[65] = {0};
-    currBlock[64] = 0;
-    unsigned int *word;
+    uint32_t *word;
 
     i = 0;
-    j = 0;
-    g = 0;
-    a = 0;
-    b = 0;
-    c = 0;
-    d = 0;
-    f = 0;
-
-    while (i < 8 * ssl->md5.newMessageLen)
+    while (i < ssl->md5.newMessageLen)
     {
-        a = ssl->md5.buffA;
-        b = ssl->md5.buffB;
-        c = ssl->md5.buffC;
-        d = ssl->md5.buffD;
-        memcpy(currBlock, &ssl->md5.newMessage[i / 8], 64);
-        word = subDividBlocks(currBlock);
-        while (j < 64)
-        {
-            if (j < 16)
-            {
-                f = md5F0(b, c, d);
-                g = j;
-            }
-            else if (j < 32)
-            {
-                f = md5F1(b, c, d);
-                g = (5 * j + 1) % 16;
-            }
-            else if (j < 48)
-            {
-                f = md5F2(b, c, d);
-                g = (3 * j + 5) % 16;
-            }
-            else
-            {
-                f = md5F3(b, c, d);
-                g = (7 * j) % 16;
-            }
-            f = f + a + ssl->md5.k[j] + word[g];
-            a = d;
-            d = c;
-            c = b;
-            b = b + leftRotate(f, ssl->md5.r[j]);
-            j += 1;
-        }
-        free(word);
-        j = 0;
-        ssl->md5.buffA += a;
-        ssl->md5.buffB += b;
-        ssl->md5.buffC += c;
-        ssl->md5.buffD += d;
-        i += 512;
+        ssl->md5.a = ssl->md5.buffA;
+        ssl->md5.b = ssl->md5.buffB;
+        ssl->md5.c = ssl->md5.buffC;
+        ssl->md5.d = ssl->md5.buffD;
+        ft_memcpy(currBlock, &ssl->md5.newMessage[i], 64);
+        word = (uint32_t *)(ssl->md5.newMessage + i);
+        hashWord(ssl, word);
+        ssl->md5.buffA += ssl->md5.a;
+        ssl->md5.buffB += ssl->md5.b;
+        ssl->md5.buffC += ssl->md5.c;
+        ssl->md5.buffD += ssl->md5.d;
+        i += 64;
     }
-    printf("MD5 = %x", ssl->md5.buffA);
-    printf("%x", ssl->md5.buffB);
-    printf("%x", ssl->md5.buffC);
-    printf("%x\n", ssl->md5.buffD);
+    write(1, "MD5 = ", 6);
+    ft_printf("%x", convertAsLittleEndian(ssl->md5.buffA));
+    ft_printf("%x", convertAsLittleEndian(ssl->md5.buffB));
+    ft_printf("%x", convertAsLittleEndian(ssl->md5.buffC));
+    ft_printf("%x\n", convertAsLittleEndian(ssl->md5.buffD));
 }
 
 void md5FillString(t_ssl *ssl)
 {
-    unsigned int lenBits;
+    unsigned long int lenBits;
 
     ssl->md5.blockCount = ((ssl->messageLen + 8) / 64) + 1;
     ssl->md5.newMessageLen = ssl->md5.blockCount * 64;
-    ssl->md5.newMessage = ft_ustrnew(ssl->md5.newMessageLen);
+    if (!(ssl->md5.newMessage = ft_ustrnew(ssl->md5.newMessageLen)))
+    {
+        ft_putstr("Allocation error\n");
+        exit(0);
+    }
     ssl->md5.newMessage = ft_ustrcpy(ssl->md5.newMessage, ssl->message);
     ssl->md5.newMessage[ssl->messageLen] = 0x80;
     lenBits = 8 * ssl->messageLen;
-    memcpy(ssl->md5.newMessage + (ssl->md5.newMessageLen - 8), &lenBits, 4);
+    memcpy(ssl->md5.newMessage + (ssl->md5.newMessageLen - 8), &lenBits, 8);
     processMd5(ssl);
-    // printf("[%hhu][%hhu][%hhu][%hhu][%hhu]\n", ssl->md5.newMessage[ssl->messageLen], ssl->md5.newMessage[ssl->md5.newMessageLen - 4], ssl->md5.newMessage[ssl->md5.newMessageLen - 3], ssl->md5.newMessage[ssl->md5.newMessageLen - 2], ssl->md5.newMessage[ssl->md5.newMessageLen - 1]);
-    // printf("[%x][%x][%x][%x][%x]\n", ssl->md5.newMessage[ssl->messageLen], ssl->md5.newMessage[ssl->md5.newMessageLen - 4], ssl->md5.newMessage[ssl->md5.newMessageLen - 3], ssl->md5.newMessage[ssl->md5.newMessageLen - 2], ssl->md5.newMessage[ssl->md5.newMessageLen - 1]);
-    // for (size_t i = 0; i < ssl->md5.newMessageLen; i++)
-    //     printf("[%x]", ssl->md5.newMessage[i]);
-    // printf("\n");
-    // printf("ssl->messageLen = %u, [%x]\n", lenBits, lenBits);
 }
