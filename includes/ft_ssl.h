@@ -35,6 +35,8 @@ typedef struct s_md5
     unsigned buffB;
     unsigned buffC;
     unsigned buffD;
+    unsigned int *r;
+    unsigned int *k;
 } t_md5;
 
 typedef struct s_ssl
