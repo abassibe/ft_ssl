@@ -72,10 +72,11 @@ typedef struct s_ssl
     size_t messageLen;
     t_md5 md5;
     t_sha256 sha256;
-    void (*algo)(struct s_ssl *);
-    void (*applyOption)(struct s_ssl *);
+    void *func[10];
+    char **filesName;
     int command;
     int option;
+    int readFromFile;
 } t_ssl;
 
 void md5FillString(t_ssl *ssl);

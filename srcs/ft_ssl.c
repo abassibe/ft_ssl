@@ -98,12 +98,12 @@ void echoStdin()
 {
 }
 
-void printUsage()
+void 	printUsage()
 {
 	write(1, "usage: ft_ssl command [command opts] [command args]\n", 52);
 }
 
-void checkOptions(char **value, t_ssl *ssl)
+int		checkOptions(char **value, t_ssl *ssl)
 {
 	int		i;
 	int		j;
@@ -116,29 +116,18 @@ void checkOptions(char **value, t_ssl *ssl)
 		while (value[i][j])
 		{
 			if (value[i][j] == 's')
-			{
 				ssl->option &= OPTION_S;
-				printf("OPTION S OK\n");
-			}
 			else if (value[i][j] == 'p')
-			{
 				ssl->option &= OPTION_P;
-				printf("OPTION P OK\n");
-			}
 			else if (value[i][j] == 'q')
-			{
 				ssl->option &= OPTION_Q;
-				printf("OPTION Q OK\n");
-			}
 			else if (value[i][j] == 'r')
-			{
 				ssl->option &= OPTION_R;
-				printf("OPTION R OK\n");
-			}
 			j++;
 		}
 		i++;
 	}
+	return (i);
 }
 
 int		ft_strcmpUnsensitiveCase(const char *s1, const char *s2)
@@ -150,13 +139,33 @@ int		ft_strcmpUnsensitiveCase(const char *s1, const char *s2)
 	c = 0;
 	str1 = (unsigned char *)s1;
 	str2 = (unsigned char *)s2;
-	while (ft_toupper(str1[c]) != '\0' && str1[c] == str2[c])
+	while (ft_toupper(str1[c]) != '\0' && ft_toupper(str1[c]) == str2[c])
 	{
 		c++;
 		if (str1[c] == '\0' && str2[c] == '\0')
 			return (0);
 	}
 	return (ft_toupper(str1[c]) - str2[c]);
+}
+
+void		checkFile(int i, char **value, t_ssl *ssl)
+{
+	int index;
+	int	j;
+
+	ssl->readFromFile = 0;
+	index = i;
+	while (value[i])
+		i++;
+	if (i == index)
+		return ;
+	ssl->readFromFile = i - index;
+	if (!(ssl->filesName = ft_memalloc(sizeof(char *) * (ssl->readFromFile + 1))))
+		exit(0);
+	j = 0;
+	while (index < i)
+		ssl->filesName[j++] = value[index++];
+	ssl->filesName[index] = 0;
 }
 
 char	checkCommand(char *buffer, t_ssl *ssl)
@@ -169,38 +178,56 @@ char	checkCommand(char *buffer, t_ssl *ssl)
 	value = ft_strsplit(buffer, ' ');
 	while (i < NONE_COMMAND)
 	{
-		
 		if (!ft_strcmpUnsensitiveCase((value[0]), COMMAND_STRING[i]))
+		{
 			ssl->command = i;
+			break ;
+		}
 		i++;
 	}
-	checkOptions(value, ssl);
-	return (ssl->command < 0 ? -1 : 1);
+	if (i == NONE_COMMAND)
+	{
+		printUsage();
+		write(1, "ft_ssl> ", 8);
+		return (-1);
+	}
+	i = checkOptions(value, ssl);
+	checkFile(i, value, ssl);
+	return (1);
+}
+
+void processHash()
+{
+	return ;
 }
 
 void loopStdin(t_ssl *ssl)
 {
 	char	*buffer;
-	char	validCommand;
+	char	validInput;
 
+	ssl->message = NULL;
 	buffer = ft_strnew(1);
-	validCommand = -1;
+	validInput = -1;
+	write(1, "ft_ssl> ", 8);
 	while (get_next_line(0, &buffer))
 	{
-		if (validCommand == -1)
+		if (validInput == -1)
 		{
-			validCommand = checkCommand(buffer, ssl);
-			if (validCommand < 0)
-			{
-				printUsage();
+			if ((validInput = checkCommand(buffer, ssl)) < 0)
 				continue ;
-			}
-			else
-				printf("%d\n", ssl->command);
 		}
+		else if (ssl->readFromFile == 0)
+		{
+			if (!ssl->message)
+				ssl->message = (unsigned char *)ft_strdup(buffer);
+			else
+				ssl->message = (unsigned char *)ft_strjoinff((char *)ssl->message, buffer);
+		}
+		else 
+			processHash();
 	}
 }
-	
 
 int main(int ac, char **av)
 {
