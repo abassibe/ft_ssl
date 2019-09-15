@@ -12,23 +12,6 @@
 
 #include "../includes/ft_ssl.h"
 
-unsigned char *ft_ustrnew(size_t size)
-{
-	unsigned char *m;
-	size_t c;
-
-	c = 0;
-	if (!(m = (unsigned char *)malloc(size + 1)))
-		return (NULL);
-	while (c != size)
-	{
-		m[c] = 0;
-		c++;
-	}
-	m[c] = 0;
-	return (m);
-}
-
 unsigned char *ft_ustrcpy(unsigned char *dst, unsigned char *src)
 {
 	size_t k;
@@ -115,17 +98,121 @@ void echoStdin()
 {
 }
 
+void printUsage()
+{
+	write(1, "usage: ft_ssl command [command opts] [command args]\n", 52);
+}
+
+void checkOptions(char **value, t_ssl *ssl)
+{
+	int		i;
+	int		j;
+
+	ssl->option = 0;
+	i = 1;
+	while (value[i] && value[i][0] == '-')
+	{
+		j = 1;
+		while (value[i][j])
+		{
+			if (value[i][j] == 's')
+			{
+				ssl->option &= OPTION_S;
+				printf("OPTION S OK\n");
+			}
+			else if (value[i][j] == 'p')
+			{
+				ssl->option &= OPTION_P;
+				printf("OPTION P OK\n");
+			}
+			else if (value[i][j] == 'q')
+			{
+				ssl->option &= OPTION_Q;
+				printf("OPTION Q OK\n");
+			}
+			else if (value[i][j] == 'r')
+			{
+				ssl->option &= OPTION_R;
+				printf("OPTION R OK\n");
+			}
+			j++;
+		}
+		i++;
+	}
+}
+
+int		ft_strcmpUnsensitiveCase(const char *s1, const char *s2)
+{
+	int				c;
+	unsigned char	*str1;
+	unsigned char	*str2;
+
+	c = 0;
+	str1 = (unsigned char *)s1;
+	str2 = (unsigned char *)s2;
+	while (ft_toupper(str1[c]) != '\0' && str1[c] == str2[c])
+	{
+		c++;
+		if (str1[c] == '\0' && str2[c] == '\0')
+			return (0);
+	}
+	return (ft_toupper(str1[c]) - str2[c]);
+}
+
+char	checkCommand(char *buffer, t_ssl *ssl)
+{
+	char	**value;
+	int		i;
+
+	i = 0;
+	ssl->command = -1;
+	value = ft_strsplit(buffer, ' ');
+	while (i < NONE_COMMAND)
+	{
+		
+		if (!ft_strcmpUnsensitiveCase((value[0]), COMMAND_STRING[i]))
+			ssl->command = i;
+		i++;
+	}
+	checkOptions(value, ssl);
+	return (ssl->command < 0 ? -1 : 1);
+}
+
+void loopStdin(t_ssl *ssl)
+{
+	char	*buffer;
+	char	validCommand;
+
+	buffer = ft_strnew(1);
+	validCommand = -1;
+	while (get_next_line(0, &buffer))
+	{
+		if (validCommand == -1)
+		{
+			validCommand = checkCommand(buffer, ssl);
+			if (validCommand < 0)
+			{
+				printUsage();
+				continue ;
+			}
+			else
+				printf("%d\n", ssl->command);
+		}
+	}
+}
+	
+
 int main(int ac, char **av)
 {
 	t_ssl ssl;
 
+	if (ac == 1)
+		loopStdin(&ssl);
 	if (ac > 1)
 		readAndInitialize(&ssl, av);
 	else if (ac == 1)
 		return (0); //TODO: lecture depuis STDIN
 	fillStructPattern(&ssl);
 	free(ssl.md5.newMessage);
-	while (1)
-		;
 	return (0);
 }

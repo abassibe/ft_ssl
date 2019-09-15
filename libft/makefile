@@ -124,7 +124,8 @@ SRCS = ft_atoi.c \
 	   ft_itoa_base_unicode.c \
 	   ft_putnstr.c \
 	   ft_power.c \
-	   ft_abs.c
+	   ft_abs.c \
+	   ft_ustrnew.c
 
 OBJS = $(SRCS:.c=.o)
 

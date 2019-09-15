@@ -114,4 +114,5 @@ int					ft_power(int nb, int power);
 int					ft_btoi(char *str);
 int					get_next_line(const int fd, char **line);
 int					ft_abs(int value);
+unsigned char		*ft_ustrnew(size_t size);
 #endif

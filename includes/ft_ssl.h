@@ -19,6 +19,28 @@
 #include <math.h>
 #include "../includes/libft.h"
 
+#define OPTION_S 0x00000001
+#define OPTION_P 0x00000010
+#define OPTION_Q 0x00000100
+#define OPTION_R 0x00001000
+#define AMOUNT_OPTIONS 4
+
+#define FOREACH_COMMAND(COMMAND) \
+        COMMAND(MD5) \
+        COMMAND(SHA256) \
+        COMMAND(NONE_COMMAND) \
+
+#define GENERATE_ENUM(ENUM) ENUM,
+#define GENERATE_STRING(STRING) #STRING,
+
+typedef enum {
+    FOREACH_COMMAND(GENERATE_ENUM)
+} COMMAND_ENUM;
+
+static const char *COMMAND_STRING[] = {
+    FOREACH_COMMAND(GENERATE_STRING)
+};
+
 typedef struct s_sha256
 {
     unsigned char *newMessage;
@@ -51,7 +73,9 @@ typedef struct s_ssl
     t_md5 md5;
     t_sha256 sha256;
     void (*algo)(struct s_ssl *);
-    void (*option)(struct s_ssl *);
+    void (*applyOption)(struct s_ssl *);
+    int command;
+    int option;
 } t_ssl;
 
 void md5FillString(t_ssl *ssl);
