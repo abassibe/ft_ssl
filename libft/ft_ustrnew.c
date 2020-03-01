@@ -1,27 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strcpy.c                                        :+:      :+:    :+:   */
+/*   ft_ustrnew.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: qumaujea <qumaujea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/02/13 02:05:37 by qumaujea          #+#    #+#             */
-/*   Updated: 2020/02/13 02:31:49 by qumaujea         ###   ########.fr       */
+/*   Created: 2020/02/13 02:06:55 by qumaujea          #+#    #+#             */
+/*   Updated: 2020/02/13 02:32:46 by qumaujea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strcpy(char *dst, char *src)
+unsigned char	*ft_ustrnew(size_t size)
 {
-	size_t	i;
+	unsigned char	*m;
+	size_t			c;
 
-	i = 0;
-	while (src[i])
+	c = 0;
+	if (!(m = (unsigned char *)malloc(size + 1)))
+		return (NULL);
+	while (c != size)
 	{
-		dst[i] = src[i];
-		i++;
+		m[c] = 0;
+		c++;
 	}
-	dst[i] = '\0';
-	return (dst);
+	return (m);
 }

@@ -1,27 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strcpy.c                                        :+:      :+:    :+:   */
+/*   exit_error.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: qumaujea <qumaujea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/02/13 02:05:37 by qumaujea          #+#    #+#             */
-/*   Updated: 2020/02/13 02:31:49 by qumaujea         ###   ########.fr       */
+/*   Created: 2020/02/13 02:03:21 by qumaujea          #+#    #+#             */
+/*   Updated: 2020/02/13 02:30:16 by qumaujea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strcpy(char *dst, char *src)
+void	exit_error(char *str)
 {
-	size_t	i;
-
-	i = 0;
-	while (src[i])
-	{
-		dst[i] = src[i];
-		i++;
-	}
-	dst[i] = '\0';
-	return (dst);
+	ft_putendl(str);
+	exit(0);
 }

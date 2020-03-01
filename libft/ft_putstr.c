@@ -3,25 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_putstr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abassibe <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: qumaujea <qumaujea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/01/22 09:04:09 by abassibe          #+#    #+#             */
-/*   Updated: 2017/05/05 05:56:29 by abassibe         ###   ########.fr       */
+/*   Created: 2020/02/13 02:03:25 by qumaujea          #+#    #+#             */
+/*   Updated: 2020/02/13 02:31:29 by qumaujea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/libft.h"
+#include "libft.h"
 
-void	ft_putstr(const char *c)
+void	ft_putstr(char *str)
 {
-	int p;
-
-	if (!(c))
-		return ;
-	p = 0;
-	while (c[p] != '\0')
-	{
-		ft_putchar(c[p]);
-		p++;
-	}
+	write(1, str, ft_strlen(str));
 }

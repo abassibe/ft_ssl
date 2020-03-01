@@ -3,28 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abassibe <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: qumaujea <qumaujea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/01/18 15:09:47 by abassibe          #+#    #+#             */
-/*   Updated: 2018/01/20 01:53:27 by abassibe         ###   ########.fr       */
+/*   Created: 2020/02/13 02:06:26 by qumaujea          #+#    #+#             */
+/*   Updated: 2020/02/13 02:31:59 by qumaujea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/libft.h"
+#include "libft.h"
 
-char	*ft_strdup(const char *src)
+char	*ft_strdup(char *s1)
 {
-	size_t		c;
-	char		*dst;
+	char	*s2;
 
-	c = 0;
-	if (!(dst = (char *)malloc(sizeof(char) * ft_strlen(src) + 1)))
-		return (NULL);
-	while (c != ft_strlen(src))
-	{
-		dst[c] = src[c];
-		c++;
-	}
-	dst[c] = '\0';
-	return (dst);
+	if (!(s2 = ft_strnew(ft_strlen(s1))))
+		exit_error("An error occured on malloc, exiting...");
+	return (ft_strcpy(s2, s1));
 }
