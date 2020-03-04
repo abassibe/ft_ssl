@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strnew.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qumaujea <qumaujea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abassibe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/02/13 02:06:04 by qumaujea          #+#    #+#             */
-/*   Updated: 2020/02/13 02:33:34 by qumaujea         ###   ########.fr       */
+/*   Created: 2017/01/23 17:45:45 by abassibe          #+#    #+#             */
+/*   Updated: 2018/03/03 04:18:30 by abassibe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../includes/libft.h"
 
-char		*ft_strnew(size_t size)
+char	*ft_strnew(size_t size)
 {
 	char	*m;
 	size_t	c;

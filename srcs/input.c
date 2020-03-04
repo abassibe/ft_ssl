@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   input.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abassibe <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: qumaujea <qumaujea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/17 02:34:57 by abassibe          #+#    #+#             */
-/*   Updated: 2019/11/17 05:13:43 by abassibe         ###   ########.fr       */
+/*   Updated: 2020/03/04 03:57:03 by abassibe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,10 +50,7 @@ static void		set_algo_options(char *options, t_ssl **ssl, int *flag)
 static void		parse_input(char **args, t_ssl *ssl, int index, t_command *tmp)
 {
 	if (ssl->opt_p)
-	{
-		tmp->opt_s = 1;
 		tmp->target = get_input_from_stdin();
-	}
 	while (args[index])
 	{
 		if (tmp && tmp->target)
@@ -61,7 +58,6 @@ static void		parse_input(char **args, t_ssl *ssl, int index, t_command *tmp)
 		if ((args[index][0] && args[index][0] == '-') &&
 				(args[index][1] && args[index][1] == 's'))
 		{
-			tmp->opt_s = 1;
 			index++;
 			if (!args[index])
 			{

@@ -6,7 +6,7 @@
 /*   By: abassibe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/17 03:56:11 by abassibe          #+#    #+#             */
-/*   Updated: 2019/11/17 05:48:38 by abassibe         ###   ########.fr       */
+/*   Updated: 2020/03/04 03:58:28 by abassibe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static uint32_t		*create_words(uint32_t *chunk)
 	uint32_t	s0;
 	uint32_t	s1;
 
-	if (!(words = (uint32_t *)malloc(sizeof(uint32_t) * 65)))
+	if (!(words = (uint32_t *)ft_memalloc(sizeof(uint32_t) * 65)))
 		exit_error("An error occured on malloc, exiting...");
 	ft_bzero(words, sizeof(uint32_t) * 65);
 	i = -1;

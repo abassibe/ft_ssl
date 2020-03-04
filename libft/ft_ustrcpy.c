@@ -6,11 +6,11 @@
 /*   By: qumaujea <qumaujea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/13 02:07:13 by qumaujea          #+#    #+#             */
-/*   Updated: 2020/02/13 02:33:52 by qumaujea         ###   ########.fr       */
+/*   Updated: 2020/03/04 05:51:15 by abassibe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../includes/libft.h"
 
 unsigned char	*ft_ustrcpy(unsigned char *dst, unsigned char *src)
 {

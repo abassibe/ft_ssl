@@ -3,25 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   ft_bzero.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qumaujea <qumaujea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abassibe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/02/13 02:04:28 by qumaujea          #+#    #+#             */
-/*   Updated: 2020/02/13 02:33:02 by qumaujea         ###   ########.fr       */
+/*   Created: 2017/01/21 05:06:09 by abassibe          #+#    #+#             */
+/*   Updated: 2017/05/05 05:59:47 by abassibe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../includes/libft.h"
 
 void	ft_bzero(void *s, size_t n)
 {
-	size_t i;
+	char	*str;
+	size_t	c;
 
-	i = 0;
-	if (n == 0)
-		return ;
-	while (i < n)
+	str = s;
+	c = 0;
+	while (c < n)
 	{
-		((char *)s)[i] = 0;
-		i++;
+		str[c] = '\0';
+		c++;
 	}
 }

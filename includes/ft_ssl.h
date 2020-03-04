@@ -6,7 +6,7 @@
 /*   By: qumaujea <qumaujea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/17 05:50:07 by abassibe          #+#    #+#             */
-/*   Updated: 2020/02/13 01:53:31 by qumaujea         ###   ########.fr       */
+/*   Updated: 2020/03/04 05:42:54 by abassibe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,9 @@
 # include <stdint.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include "libft.h"
+
+# define FILE_MODE 101
 
 static unsigned int			g_md5_h[8] =
 {
@@ -106,7 +109,6 @@ struct						s_sha256
 struct						s_command
 {
 	char					*target;
-	int						opt_s;
 	t_command				*next;
 };
 
@@ -118,6 +120,7 @@ struct						s_ssl
 	int						opt_q;
 	int						opt_p;
 	int						opt_r;
+	int						opt_s;
 	size_t					file_size;
 };
 
@@ -138,7 +141,7 @@ void						get_target_from_console(t_command **command);
 void						parse_options(char **args, t_ssl *ssl);
 char						*get_input_from_file(int fd, size_t *size);
 char						*get_input_from_stdin(void);
-int							read_from_stdin(char *algo);
+int							read_from_stdin(char *algo, int p_mode);
 unsigned int				f0(unsigned int b, unsigned int c, unsigned int d);
 unsigned int				f1(unsigned int b, unsigned int c, unsigned int d);
 unsigned int				f2(unsigned int b, unsigned int c, unsigned int d);
@@ -153,17 +156,15 @@ void						display_hash_md5(t_ssl *ssl, unsigned int *hash,
 		t_command *command);
 void						display_hash_sha256(t_ssl *ssl, unsigned int *hash,
 		t_command *command);
-void						ft_putstr(char *str);
-void						ft_putendl(char *str);
-char						*ft_strcpy(char *dst, char *src);
-char						*ft_strdup(char *s1);
-size_t						ft_strlen(char *s);
-void						ft_bzero(void *s, size_t n);
-void						*ft_memalloc(size_t size);
-void						*ft_memcpy(void *dst, const void *src, size_t n);
 char						*ft_itoa_base_unsigned(unsigned long long value,
 		int base, int maj);
-int							ft_strcmp(char *s1, char *s2);
 int							ft_strfind(char *str, char find);
+unsigned char				*ft_ustrnew(size_t size);
+void						process_hash(t_ssl *ssl, t_command *command,
+		t_hash_algo hash_function);
+int							process_files(t_ssl *ssl, t_hash_algo hash_function,
+		char **av, uint32_t arg_index);
+void						invalid_hash_algo(void);
+void						display_usage(void);
 
 #endif

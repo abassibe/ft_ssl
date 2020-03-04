@@ -6,13 +6,13 @@
 /*   By: abassibe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/17 04:33:15 by abassibe          #+#    #+#             */
-/*   Updated: 2019/11/17 05:40:15 by abassibe         ###   ########.fr       */
+/*   Updated: 2020/03/04 04:22:40 by abassibe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/ft_ssl.h"
 
-static t_sha256	*sha256_init_env(t_ssl *ssl, unsigned int *h)
+static t_sha256	*sha256_init_env(unsigned int *h, unsigned char *input)
 {
 	t_sha256	*env;
 
@@ -26,7 +26,7 @@ static t_sha256	*sha256_init_env(t_ssl *ssl, unsigned int *h)
 	env->f = h[5];
 	env->g = h[6];
 	env->h = h[7];
-	env->input_len = ssl->file_size;
+	env->input_len = ft_strlen((char *)input);
 	return (env);
 }
 
@@ -77,7 +77,7 @@ void			sha256(t_ssl *ssl, t_command *command, unsigned char *input)
 	uint32_t		*chunk;
 
 	sha256_init_hash(k, h);
-	env = sha256_init_env(ssl, h);
+	env = sha256_init_env(h, input);
 	sha256_fill_input(&env, input);
 	curr_block = 0;
 	while (curr_block < env->filled_input_len)

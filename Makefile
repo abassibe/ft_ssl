@@ -6,7 +6,7 @@
 #    By: qumaujea <qumaujea@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/09 05:21:00 by abassibe          #+#    #+#              #
-#    Updated: 2020/02/13 02:23:48 by qumaujea         ###   ########.fr        #
+#    Updated: 2020/03/04 05:47:04 by abassibe         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,11 @@ SRCS =	ft_ssl.c \
 		get_input.c \
 		print.c \
 		md5_core.c \
-		sha256_core.c
+		sha256_core.c\
+		utils.c \
+		ft_itoa_base_unsigned.c \
+		ft_ustrnew.c \
+		ft_strfind.c
 
 OBJS = $(SRCS:.c=.o)
 

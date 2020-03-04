@@ -1,18 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_itoa_base_unsigned.c                            :+:      :+:    :+:   */
+/*   ft_itoa_base.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qumaujea <qumaujea@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abassibe <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/02/13 02:03:09 by qumaujea          #+#    #+#             */
-/*   Updated: 2020/02/13 02:30:53 by qumaujea         ###   ########.fr       */
+/*   Created: 2017/04/08 02:18:04 by abassibe          #+#    #+#             */
+/*   Updated: 2017/05/05 05:58:33 by abassibe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../includes/libft.h"
+#include <stdio.h>
 
-static int	count(unsigned long long nbr, int base)
+static int		compte(unsigned long long nbr, int base)
 {
 	int		ret;
 
@@ -25,29 +26,25 @@ static int	count(unsigned long long nbr, int base)
 	return (ret);
 }
 
-char		*ft_itoa_base_unsigned(unsigned long long value, int base, int maj)
+char			*ft_itoa_base_us(unsigned long long value, int base)
 {
-	char	*ret;
+	char	*retour;
 	int		nb;
 	int		i;
 	char	*tab;
 
-	if (maj)
-		tab = "0123456789ABCDEF";
-	else
-		tab = "0123456789abcdef";
+	tab = "0123456789abcdef";
 	if (value == 0)
 		return (ft_strdup("0"));
-	nb = count(value, base);
-	if (!(ret = (char *)ft_ustrnew(nb)))
-		exit_error("An error occured on malloc, exiting...");
+	nb = compte(value, base);
+	retour = ft_strnew(nb);
 	i = 1;
 	while (value != 0)
 	{
-		ret[nb - i] = tab[value % base];
+		retour[nb - i] = tab[value % base];
 		value /= base;
 		i++;
 	}
-	ret[nb] = '\0';
-	return (ret);
+	retour[nb] = '\0';
+	return (retour);
 }
